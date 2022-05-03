@@ -1,52 +1,61 @@
 // Places for displaying product data
 const itemImg = document.querySelector('.item__img')
 const itemTitle = document.querySelector('#title')
+const pageTitle = document.querySelector('title')
 const itemPrice = document.querySelector('#price')
 const itemDescr = document.querySelector('#description')
 const colorSelect = document.querySelector('#colors')
 
 /**
- * Take product id in current URL
- * @returns {string} product Id
+ * Find product id in current URL
+ * @returns {string}
  */
 const findProductId = () => {
     let url = new URLSearchParams(document.location.search)
+
     return url.get("id")
 }
 
 /**
- * Display product image with alt text
- * @param {string} imageUrl 
- * @param {string} altTxt 
+ * Replace text in Head>Title by product name
+ * @param {array} product
  */
-const displayImg = (imageUrl, altTxt) => {
-    let img = document.createElement('img')
-    img.src = imageUrl
-    img.alt = altTxt
-    itemImg.appendChild(img)
+const replacePageTitle = (product) => {
+    pageTitle.innerText = product.name
 }
 
 /**
- * Display name, price and description of product
- * @param {sting} name 
- * @param {number} price 
- * @param {string} description 
+ * Create product image element with alt text
+ * @param {array} product
+ * @returns {HTMLElement}
  */
-const displayText = (name, price, description) => {
-    itemTitle.innerHTML = name
-    itemPrice.innerHTML = price
-    itemDescr.innerHTML = description
+const createProductImg = (product) => {
+    let img = document.createElement('img')
+    img.src = product.imageUrl
+    img.alt = product.altTxt
+    
+    return img
+}
+
+/**
+ * Fill element with name, price and description of product
+ * @param {array} product 
+ */
+const fillProductText = (product) => {
+    itemTitle.textContent = product.name
+    itemPrice.textContent = product.price
+    itemDescr.textContent = product.description
 }
 
 /**
  * Add colors to the select element
- * @param {array of string} colors 
+ * @param {array} product
  */
-const addColors = (colors) => {
-    colors.forEach(color => {
+const addColors = (product) => {
+    product.colors.forEach(color => {
         let option = document.createElement('option')
         option.value = color
-        option.innerText = color
+        option.textContent = color
         colorSelect.appendChild(option)
     });
 }
@@ -62,9 +71,10 @@ fetch('http://localhost:3000/api/products/'+findProductId())
         }
     })
     .then(function(value){
-        displayImg(value.imageUrl, value.altTxt)
-        displayText(value.name, value.price, value.description)
-        addColors(value.colors)
+        replacePageTitle(value)
+        itemImg.appendChild(createProductImg(value))
+        fillProductText(value)
+        addColors(value)
     })
     .catch(function(err){
         alert(err)
