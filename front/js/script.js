@@ -1,35 +1,40 @@
-const itemsSection = document.querySelector('#items')
-
 /**
- * Add a product item last in items section
- * @param { Array } product
+ * Create a HTML card for 1 product at the end of items section
+ * @param { Object } product
  */
-const addProduct = (product) => {
-    itemsSection.insertAdjacentHTML("beforeend",
-        `<a href="./product.html?id=${product._id}">
-            <article>
-                <img src="${product.imageUrl}" alt="${product.altTxt}">
-                <h3 class="productName">${product.name}</h3>
-                <p class="productDescription">${product.description}</p>
-            </article>
-        </a>`
+const createHtmlCardForOneProduct = (product) => {
+    document
+        .querySelector('#items')
+        .insertAdjacentHTML("beforeend",
+            `<a href="./product.html?id=${product._id}">
+                <article>
+                    <img src="${product.imageUrl}" alt="${product.altTxt}">
+                    <h3 class="productName">${product.name}</h3>
+                    <p class="productDescription">${product.description}</p>
+                </article>
+            </a>`
     )
 }
 
 /**
- * Ask products list to API and add them in the page
+ * Ask products list to API and return it
+ * @returns { Object } data
  */
-fetch("http://localhost:3000/api/products/")
-    .then(function(res){
-        if(res.ok){
-            return res.json()
-        }
-    })
-    .then(function(value){
-        value.forEach(element => {
-            addProduct(element)
+const retrieveProductsList = async () => fetch("http://localhost:3000/api/products/")
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err =>alert("Une erreur sauvage est apparue !\n" + err))
+
+
+/**
+ * Wait products list form API and create a card for each
+ */
+const main = async () => {
+    const productsList = await retrieveProductsList()
+
+    productsList.forEach(product => {
+        createHtmlCardForOneProduct(product)
         })
-    })
-    .catch(function(err){
-        itemsSection.appendChild(document.createElement('p')).innerHTML = "Une erreur sauvage est apparue !"
-    })
+}
+
+main()
