@@ -1,16 +1,8 @@
-// Places for displaying product data
-const itemImg = document.querySelector('.item__img')
-const itemTitle = document.querySelector('#title')
-const pageTitle = document.querySelector('title')
-const itemPrice = document.querySelector('#price')
-const itemDescr = document.querySelector('#description')
-const colorSelect = document.querySelector('#colors')
-
 /**
  * Find product id in current URL
  * @returns {string}
  */
-const findProductId = () => {
+const retrieveProductId = () => {
     let url = new URLSearchParams(document.location.search)
 
     return url.get("id")
@@ -21,7 +13,9 @@ const findProductId = () => {
  * @param {array} product
  */
 const replacePageTitle = (product) => {
-    pageTitle.innerText = product.name
+    document
+        .querySelector('title')
+        .innerText = product.name
 }
 
 /**
@@ -34,48 +28,65 @@ const createProductImg = (product) => {
     img.src = product.imageUrl
     img.alt = product.altTxt
     
-    return img
+    document
+        .querySelector('.item__img')
+        .appendChild(img)
 }
 
 /**
- * Fill element with name, price and description of product
+ * Fill HTML elements with name, price and description of product
  * @param {array} product 
  */
 const fillProductText = (product) => {
-    itemTitle.textContent = product.name
-    itemPrice.textContent = product.price
-    itemDescr.textContent = product.description
+    document
+        .querySelector('#title')
+        .textContent = product.name
+
+    document
+        .querySelector('#price')
+        .textContent = product.price
+
+    document
+        .querySelector('#description')
+        .textContent = product.description
 }
 
 /**
  * Add colors to the select element
  * @param {array} product
  */
-const addColors = (product) => {
+const addColorsForSelectElement = (product) => {
     product.colors.forEach(color => {
         let option = document.createElement('option')
         option.value = color
         option.textContent = color
-        colorSelect.appendChild(option)
+
+        document
+            .querySelector('#colors')
+            .appendChild(option)
     });
 }
 
 /**
- * Ask product data to API and display then on HTML
+ * Display all the product details on page
+ * @param { Object } product 
  */
+const displayProductDetailsOnPage = (product) => {
+    replacePageTitle(product)
+    createProductImg(product)
+    fillProductText(product)
+    addColorsForSelectElement(product)    
+}
 
-fetch('http://localhost:3000/api/products/'+findProductId())
-    .then(function(res){
-        if(res.ok){
-            return res.json()
-        }
-    })
-    .then(function(value){
-        replacePageTitle(value)
-        itemImg.appendChild(createProductImg(value))
-        fillProductText(value)
-        addColors(value)
-    })
-    .catch(function(err){
-        alert(err)
-    })
+
+/**
+ * Ask product data to API and display then
+ */
+const productPage = () =>{
+    fetch('http://localhost:3000/api/products/'+retrieveProductId())
+        .then(res => res.json())
+        .then(product => displayProductDetailsOnPage(product))
+        .catch(err => alert(err))
+}
+
+productPage()
