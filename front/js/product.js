@@ -71,22 +71,28 @@ const addColorsForSelectElement = (product) => {
  * Display all the product details on page
  * @param { Object } product 
  */
-const displayProductDetailsOnPage = (product) => {
+const displayProductData = (product) => {
     replacePageTitle(product)
     createProductImg(product)
     fillProductText(product)
     addColorsForSelectElement(product)    
 }
 
+/**
+ * Ask product data to API and return them
+ * @returns { Object }
+ */
+const retrieveProductData = async () => fetch('http://localhost:3000/api/products/'+retrieveProductId())
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => alert(err))
 
 /**
- * Ask product data to API and display then
+ * Retrieve product data and display then
  */
-const productPage = () =>{
-    fetch('http://localhost:3000/api/products/'+retrieveProductId())
-        .then(res => res.json())
-        .then(product => displayProductDetailsOnPage(product))
-        .catch(err => alert(err))
+const productPage = async () =>{
+    const productData = await retrieveProductData()
+    displayProductData(productData)
 }
 
 productPage()
