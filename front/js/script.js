@@ -29,7 +29,7 @@ const retrieveProductsList = async () => fetch("http://localhost:3000/api/produc
 /**
  * Wait products list form API and create a card for each
  */
-const main = async () => {
+const homePage = async () => {
     const productsList = await retrieveProductsList()
 
     productsList.forEach(product => {
@@ -37,4 +37,4 @@ const main = async () => {
         })
 }
 
-main()
+homePage()
