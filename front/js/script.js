@@ -1,3 +1,5 @@
+import { errorManangement } from "./error.js"
+
 /**
  * Create a HTML card for 1 product at the end of items section
  * @param { Object } product
@@ -23,7 +25,7 @@ const createHtmlCardForOneProduct = (product) => {
 const retrieveProductsList = async () => fetch("http://localhost:3000/api/products/")
     .then(res => res.json())
     .then(data => data)
-    .catch(err =>alert("Une erreur sauvage est apparue !\n" + err))
+    .catch(error =>errorManangement(error))
 
 
 /**
