@@ -2,45 +2,53 @@ const readInput = (htmlElement) => {
     return document.querySelector(htmlElement).value
 }
 
-const colorAndQuantityAreFillIn = (chosenProduct) => {
-    if(chosenProduct.color && (chosenProduct.quantity > 0)){
+const colorAndQuantityAreFillIn = (selectedProduct) => {
+    if(selectedProduct.color && (selectedProduct.quantity > 0)){
         return true
     }
     alert("Il manque une donnée")
 }
 
-const chosenProductIsInLocalStorage = (chosenProduct) => {
+const updateQuantityToLocalStorage = (selectedProduct, itemNumber) => {
+    let kanap = JSON.parse(localStorage.getItem(itemNumber))
+    kanap.quantity = parseFloat(kanap.quantity) + parseFloat(selectedProduct.quantity)
+    localStorage.setItem(`${itemNumber}`, JSON.stringify(kanap))
+}
+
+const selectedProductIsNotInLocalStorage = (selectedProduct) => {
     for(let i=0; i < localStorage.length; i++){
         let kanap = JSON.parse(localStorage.getItem(i))
-        if(chosenProduct.id === kanap.id && chosenProduct.color === kanap.color){
-            return true
+        console.log(kanap)
+        console.log(selectedProduct)
+        if(selectedProduct.id === kanap.id && selectedProduct.color === kanap.color){
+            updateQuantityToLocalStorage(selectedProduct, i)
+            return false
         }
-    }
+    }    
+    return true
 }
 
-const addChosenProductInLocalStorage = (chosenProduct) => {
-    let chosenProductJson = JSON.stringify(chosenProduct)
-    localStorage.setItem(`${localStorage.length}`,chosenProductJson)
+const addSelectedProductInLocalStorage = (selectedProduct) => {
+    localStorage.setItem(`${localStorage.length}`, JSON.stringify(selectedProduct))
+    console.log("ajouté")
 }
 
-const processAddToLocalStorage = (chosenProduct) => {
-    if(chosenProductIsInLocalStorage(chosenProduct)){
-    }
-    else{        
-        addChosenProductInLocalStorage(chosenProduct)
+const processAddToLocalStorage = (selectedProduct) => {
+    if(selectedProductIsNotInLocalStorage(selectedProduct)){
+        addSelectedProductInLocalStorage(selectedProduct)
     }
 }
 
 const processAddingToCart = (productData) => {
-    let chosenProduct = {
+    let selectedProduct = {
         id: productData._id,
         color: readInput('#colors'),
         quantity: readInput('#quantity')
     }
-    if(colorAndQuantityAreFillIn(chosenProduct)){
-        processAddToLocalStorage(chosenProduct)
+    if(colorAndQuantityAreFillIn(selectedProduct)){
+        processAddToLocalStorage(selectedProduct)
 
-        alert(`Vous avez ajouté ${chosenProduct.quantity} ${productData.name} ${chosenProduct.color} à votre panier`)
+        alert(`Vous avez ajouté ${selectedProduct.quantity} ${productData.name} ${selectedProduct.color} à votre panier`)
     }
 }
 
