@@ -1,4 +1,5 @@
 import { errorManangement } from "./error.js"
+import { listenAddToCartButton } from "./productPage-addToCart.js"
 
 /**
  * Find product id in current URL
@@ -95,6 +96,7 @@ const retrieveProductData = async () => fetch('http://localhost:3000/api/product
 const productPage = async () =>{
     const productData = await retrieveProductData()
     displayProductData(productData)
+    listenAddToCartButton(productData)
 }
 
 productPage()
