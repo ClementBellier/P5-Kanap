@@ -2,11 +2,31 @@ const readInput = (htmlElement) => {
     return document.querySelector(htmlElement).value
 }
 
+const hideErrorMessage = (errorMsgId) => {
+    let errorMsg = document.querySelector(errorMsgId)
+    errorMsg.classList.add('hidden')
+    errorMsg.setAttribute("aria-hidden", "true")
+}
+
+const displayErrorMessage = (selectedProduct) => {
+    
+    if(!selectedProduct.color){
+        let colorErrorMsg = document.querySelector("#colorErrorMsg")
+        colorErrorMsg.classList.remove('hidden')
+        colorErrorMsg.setAttribute("aria-hidden", "false")
+    }
+    if(selectedProduct.quantity <= 0 || selectedProduct.quantity > 100){
+        let quantityErrorMsg = document.querySelector("#quantityErrorMsg")
+        quantityErrorMsg.classList.remove('hidden')
+        quantityErrorMsg.setAttribute("aria-hidden", "false")
+    }
+}
+
 const colorAndQuantityAreFillIn = (selectedProduct) => {
     if(selectedProduct.color && (selectedProduct.quantity > 0)){
         return true
     }
-    alert("Il manque une donnée")
+    displayErrorMessage(selectedProduct)
 }
 
 const updateQuantityToLocalStorage = (selectedProduct, itemNumber) => {
@@ -30,7 +50,6 @@ const selectedProductIsNotInLocalStorage = (selectedProduct) => {
 
 const addSelectedProductInLocalStorage = (selectedProduct) => {
     localStorage.setItem(`${localStorage.length}`, JSON.stringify(selectedProduct))
-    console.log("ajouté")
 }
 
 const processAddToLocalStorage = (selectedProduct) => {
@@ -45,6 +64,8 @@ const processAddingToCart = (productData) => {
         color: readInput('#colors'),
         quantity: readInput('#quantity')
     }
+    hideErrorMessage("#colorErrorMsg")
+    hideErrorMessage("#quantityErrorMsg")
     if(colorAndQuantityAreFillIn(selectedProduct)){
         processAddToLocalStorage(selectedProduct)
 
