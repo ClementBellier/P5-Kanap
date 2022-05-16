@@ -1,3 +1,5 @@
+import { errorManangement } from "./error.js"
+
 /**
  * Find product id in current URL
  * @returns {string}
@@ -85,7 +87,7 @@ const displayProductData = (product) => {
 const retrieveProductData = async () => fetch('http://localhost:3000/api/products/'+retrieveProductId())
         .then(res => res.json())
         .then(data => data)
-        .catch(err => alert(err))
+        .catch(error =>errorManangement(error))
 
 /**
  * Retrieve product data and display then
