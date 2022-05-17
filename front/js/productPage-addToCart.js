@@ -8,53 +8,67 @@ const hideErrorMessage = (errorMsgId) => {
     errorMsg.setAttribute("aria-hidden", "true")
 }
 
-const displayErrorMessage = (selectedProduct) => {
-    
+const displayErrorMessage = (errorMsgId) => {    
+    let colorErrorMsg = document.querySelector(errorMsgId)
+    colorErrorMsg.classList.remove('hidden')
+    colorErrorMsg.setAttribute("aria-hidden", "false")
+}
+
+const activateErrorMsgDisplay = (selectedProduct) => {
     if(!selectedProduct.color){
-        let colorErrorMsg = document.querySelector("#colorErrorMsg")
-        colorErrorMsg.classList.remove('hidden')
-        colorErrorMsg.setAttribute("aria-hidden", "false")
+        displayErrorMessage("#colorErrorMsg")
     }
     if(selectedProduct.quantity <= 0 || selectedProduct.quantity > 100){
-        let quantityErrorMsg = document.querySelector("#quantityErrorMsg")
-        quantityErrorMsg.classList.remove('hidden')
-        quantityErrorMsg.setAttribute("aria-hidden", "false")
+        displayErrorMessage("#quantityErrorMsg")
     }
 }
 
-const colorAndQuantityAreFillIn = (selectedProduct) => {
-    if(selectedProduct.color && (selectedProduct.quantity > 0)){
-        return true
-    }
-    displayErrorMessage(selectedProduct)
+const listenInputsForHideErrorMsg = () => {
+    document
+        .querySelector('#colors')
+        .addEventListener('input', ()=>{
+            hideErrorMessage("#colorErrorMsg")
+        })
+    document
+        .querySelector('#quantity')
+        .addEventListener('input', ()=>{
+            hideErrorMessage("#quantityErrorMsg")
+        })
 }
 
 const updateQuantityToLocalStorage = (selectedProduct, itemNumber) => {
-    let kanap = JSON.parse(localStorage.getItem(itemNumber))
-    kanap.quantity = parseFloat(kanap.quantity) + parseFloat(selectedProduct.quantity)
-    localStorage.setItem(`${itemNumber}`, JSON.stringify(kanap))
-}
-
-const selectedProductIsNotInLocalStorage = (selectedProduct) => {
-    for(let i=0; i < localStorage.length; i++){
-        let kanap = JSON.parse(localStorage.getItem(i))
-        console.log(kanap)
-        console.log(selectedProduct)
-        if(selectedProduct.id === kanap.id && selectedProduct.color === kanap.color){
-            updateQuantityToLocalStorage(selectedProduct, i)
-            return false
-        }
-    }    
-    return true
+    let itemInLocalStorage = JSON.parse(localStorage.getItem(itemNumber))
+    itemInLocalStorage.quantity = parseFloat(itemInLocalStorage.quantity) + parseFloat(selectedProduct.quantity)
+    localStorage.setItem(`${itemNumber}`, JSON.stringify(itemInLocalStorage))
 }
 
 const addSelectedProductInLocalStorage = (selectedProduct) => {
     localStorage.setItem(`${localStorage.length}`, JSON.stringify(selectedProduct))
 }
 
+const isSelectedProductInLocalStorage = (selectedProduct) => {
+    for(let i=0; i < localStorage.length; i++){
+        let itemInLocalStorage = JSON.parse(localStorage.getItem(i))
+        if(selectedProduct.id === itemInLocalStorage.id && selectedProduct.color === itemInLocalStorage.color){
+            return i
+        }
+    }
+    return null
+}
+
 const processAddToLocalStorage = (selectedProduct) => {
-    if(selectedProductIsNotInLocalStorage(selectedProduct)){
+    let itemNumberOfSelectedProductInLocalStorage = isSelectedProductInLocalStorage(selectedProduct)
+    if(itemNumberOfSelectedProductInLocalStorage != null){
+        updateQuantityToLocalStorage(selectedProduct, itemNumberOfSelectedProductInLocalStorage)
+    }
+    else{
         addSelectedProductInLocalStorage(selectedProduct)
+    }
+}
+
+const colorAndQuantityAreFillIn = (selectedProduct) => {
+    if(selectedProduct.color && (selectedProduct.quantity > 0 && selectedProduct.quantity <= 100)){
+        return true
     }
 }
 
@@ -64,12 +78,13 @@ const processAddingToCart = (productData) => {
         color: readInput('#colors'),
         quantity: readInput('#quantity')
     }
-    hideErrorMessage("#colorErrorMsg")
-    hideErrorMessage("#quantityErrorMsg")
     if(colorAndQuantityAreFillIn(selectedProduct)){
         processAddToLocalStorage(selectedProduct)
 
         alert(`Vous avez ajouté ${selectedProduct.quantity} ${productData.name} ${selectedProduct.color} à votre panier`)
+    }
+    else{
+        activateErrorMsgDisplay(selectedProduct)
     }
 }
 
@@ -79,6 +94,7 @@ const listenAddToCartButton = (productData) => {
         .addEventListener('click', () => {
             processAddingToCart(productData)
     })
+    listenInputsForHideErrorMsg()
 }
 
 export {listenAddToCartButton}
