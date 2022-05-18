@@ -4,6 +4,8 @@ const errorManangement = (error) => {
     const wrongProductId = new RegExp('Product')
     const insufficientData = new RegExp('Bad Request')
 
+    console.error(error)
+
     if(syntaxError.test(error)){
         alert("Oups, une erreur sauvage est apparue !\nMerci de recharger la page.")
     }

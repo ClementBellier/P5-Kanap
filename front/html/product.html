@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet" />
     <link href="../css/product.css" rel="stylesheet" />
+    <link href="../css/tooltip.css" rel="stylesheet" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
@@ -81,8 +82,8 @@
 
               <div class="item__content__addButton">
                 <button id="addToCart">Ajouter au panier</button>
-              </div>
-
+                <div id="tooltip">Vous avez ajouté ${selectedProduct.quantity} ${productData.name} ${selectedProduct.color} à votre panier</div>
+              </div>              
             </div>
           </article>
         </section>
