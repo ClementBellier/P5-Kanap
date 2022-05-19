@@ -85,7 +85,7 @@ const displayProductData = (product) => {
  * Ask product data to API and return them
  * @returns { Object }
  */
-const retrieveProductData = async () => fetch('http://localhost:3000/api/products/'+retrieveProductId())
+const retrieveProductData = async (productId) => fetch(`http://localhost:3000/api/products/${productId}`)
         .then(res => res.json())
         .then(data => data)
         .catch(error =>errorManangement(error))
@@ -94,7 +94,8 @@ const retrieveProductData = async () => fetch('http://localhost:3000/api/product
  * Retrieve product data and display then
  */
 const productPage = async () =>{
-    const productData = await retrieveProductData()
+    const productId = retrieveProductId()
+    const productData = await retrieveProductData(productId)
     displayProductData(productData)
     listenAddToCartButton(productData)
 }
