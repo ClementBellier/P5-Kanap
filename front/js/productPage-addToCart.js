@@ -40,12 +40,24 @@ const listenInputsForHideErrorMsg = () => {
 
 const updateQuantityToLocalStorage = (selectedProduct, index) => {
     const itemInLocalStorage = JSON.parse(localStorage.getItem(index))
-    itemInLocalStorage.quantity = parseFloat(itemInLocalStorage.quantity) + parseFloat(selectedProduct.quantity)
-    localStorage.setItem(`${index}`, JSON.stringify(itemInLocalStorage))
+    const newItemQuantity = parseFloat(itemInLocalStorage.quantity) + parseFloat(selectedProduct.quantity)
+    if(newItemQuantity <= 100){
+        itemInLocalStorage.quantity = newItemQuantity
+        localStorage.setItem(`${index}`, JSON.stringify(itemInLocalStorage))
+        return true
+    }
+    if(newItemQuantity > 100){
+        const quantityTooltip = "#quantityErrorTooltip"
+        const messageErrorQuantity = `Vous ne pouvez avoir plus de <strong>100 exemplaires</strong> de ce canapé.<br>Vous en avez déjà <strong>${itemInLocalStorage.quantity}</strong> dans votre panier.`
+        displayTooltip(quantityTooltip, messageErrorQuantity)
+        return false
+    }
+    return false
 }
 
 const addSelectedProductInLocalStorage = (selectedProduct) => {
     localStorage.setItem(`${localStorage.length}`, JSON.stringify(selectedProduct))
+    return true
 }
 
 const isSelectedProductInLocalStorage = (selectedProduct) => {
@@ -61,11 +73,9 @@ const isSelectedProductInLocalStorage = (selectedProduct) => {
 const addToLocalStorage = (selectedProduct) => {
     let indexOfSelectedProductInLocalStorage = isSelectedProductInLocalStorage(selectedProduct)
     if(indexOfSelectedProductInLocalStorage !== null){
-        updateQuantityToLocalStorage(selectedProduct, indexOfSelectedProductInLocalStorage)
+        return updateQuantityToLocalStorage(selectedProduct, indexOfSelectedProductInLocalStorage)
     }
-    else{
-        addSelectedProductInLocalStorage(selectedProduct)
-    }
+    return addSelectedProductInLocalStorage(selectedProduct)
 }
 
 const colorAndQuantityAreFillIn = (selectedProduct) => {
@@ -82,10 +92,11 @@ const addingToCart = (productData) => {
         quantity: readInput('#quantity')
     }
     if(colorAndQuantityAreFillIn(selectedProduct)){
-        addToLocalStorage(selectedProduct)
-
-        const messageSuccessAddingToCart = `Vous avez ajouté <strong>${selectedProduct.quantity} ${productData.name}</strong> de couleur <strong>${selectedProduct.color}</strong> à votre panier`
-        displayTooltip(messageSuccessAddingToCart)
+        if(addToLocalStorage(selectedProduct)){
+            const successTooltip = "#successMsgTooltip"
+            const messageSuccessAddingToCart = `Vous avez ajouté <strong>${parseFloat(selectedProduct.quantity)} ${productData.name}</strong> de couleur <strong>${selectedProduct.color}</strong> à votre panier`
+            displayTooltip(successTooltip, messageSuccessAddingToCart)
+        }
     }
     else{
         activateErrorMsgDisplay(selectedProduct)

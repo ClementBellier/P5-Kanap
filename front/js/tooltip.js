@@ -1,6 +1,6 @@
 
-const displayTooltip = (textToDisplay) => {
-    const tooltip = document.querySelector("#tooltip")
+const displayTooltip = (idOfTooltip, textToDisplay) => {
+    const tooltip = document.querySelector(idOfTooltip)
     tooltip.innerHTML = textToDisplay
     tooltip.classList.add("active")
     window.setTimeout(() => {tooltip.classList.remove("active")}, 5000)
