@@ -15,6 +15,10 @@ const calculAndDisplaySum = (cartProductArray) => {
     dispalySum(sum, quantity)
 }
 
+const sortArrayById = (cartProductArray) => {
+  cartProductArray.sort((a,z)=> a.id.localeCompare(z.id))
+}
+
 const createArticleHtmlElement = (product) => {
     document.querySelector("#cart__items")
             .insertAdjacentHTML('beforeend',
@@ -61,6 +65,7 @@ const cartPage = async () => {
         const itemInLocalStorage = JSON.parse(localStorage.getItem(i))
         await addItemToCartProductArray(itemInLocalStorage, cartProductArray)
     }
+    sortArrayById(cartProductArray)
     cartProductArray.forEach(product => createArticleHtmlElement(product))
     calculAndDisplaySum(cartProductArray)
 }
