@@ -1,18 +1,18 @@
 import { retrieveProductData } from "./api-calls.js"
 
-const dispalySum = (sum, quantity) => {
+const displayTotalPrice = (totalPrice, quantity) => {
     document.querySelector("#totalQuantity").innerHTML = quantity
-    document.querySelector("#totalPrice").innerHTML = sum
+    document.querySelector("#totalPrice").innerHTML = totalPrice
 }
 
-const calculAndDisplaySum = (cartProductArray) => {
-    let sum = 0
+const calculAndDisplayTotalPrice = (cartProductArray) => {
+    let totalPrice = 0
     let quantity = 0
     cartProductArray.forEach(product => {
-        sum += product.price * product.quantity
+        totalPrice += product.price * product.quantity
         quantity += product.quantity
     })
-    dispalySum(sum, quantity)
+    displayTotalPrice(totalPrice, quantity)
 }
 
 const sortArrayById = (cartProductArray) => {
@@ -67,7 +67,7 @@ const cartPage = async () => {
     }
     sortArrayById(cartProductArray)
     cartProductArray.forEach(product => createArticleHtmlElement(product))
-    calculAndDisplaySum(cartProductArray)
+    calculAndDisplayTotalPrice(cartProductArray)
 }
 
 cartPage()
