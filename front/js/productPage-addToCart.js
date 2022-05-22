@@ -4,24 +4,31 @@ const readInput = (htmlElement) => {
     return document.querySelector(htmlElement).value
 }
 
-const hideErrorMessage = (errorMsgId) => {
-    const errorMsg = document.querySelector(errorMsgId)
-    errorMsg.classList.add('hidden')
-    errorMsg.setAttribute("aria-hidden", "true")
+const hideErrorMessage = (parent) => {
+    const errorMsg = document.querySelector(parent)
+    if(errorMsg.querySelector("p")){
+        errorMsg.removeChild(document.querySelector(`${parent} p`))
+    }
 }
 
-const displayErrorMessage = (errorMsgId) => {    
-    const colorErrorMsg = document.querySelector(errorMsgId)
-    colorErrorMsg.classList.remove('hidden')
-    colorErrorMsg.setAttribute("aria-hidden", "false")
+const displayErrorMessage = (parent, errorMessage) => {
+    const parentError = document.querySelector(parent)
+    if(!parentError.querySelector("p")){
+        const errorMsgElement = document.createElement("p")
+        errorMsgElement.style.color = "#fbbcbc"
+        errorMsgElement.style.marginLeft= "8px"
+        errorMsgElement.style.marginTop= "6px"
+        errorMsgElement.innerHTML = errorMessage
+        parentError.appendChild(errorMsgElement)
+    }
 }
 
 const activateErrorMsgDisplay = (selectedProduct) => {
     if(!selectedProduct.color){
-        displayErrorMessage("#colorErrorMsg")
+        displayErrorMessage(".item__content__settings__color","Merci de choisir une couleur.")
     }
     if(selectedProduct.quantity <= 0 || selectedProduct.quantity > 100){
-        displayErrorMessage("#quantityErrorMsg")
+        displayErrorMessage(".item__content__settings__quantity","La quantité doit être comprise entre 1 et 100.")
     }
 }
 
@@ -29,12 +36,12 @@ const listenInputsForHideErrorMsg = () => {
     document
         .querySelector('#colors')
         .addEventListener('input', ()=>{
-            hideErrorMessage("#colorErrorMsg")
+            hideErrorMessage(".item__content__settings__color")
         })
     document
         .querySelector('#quantity')
         .addEventListener('input', ()=>{
-            hideErrorMessage("#quantityErrorMsg")
+            hideErrorMessage(".item__content__settings__quantity")
         })
 }
 
@@ -47,7 +54,7 @@ const updateQuantityToLocalStorage = (selectedProduct, index) => {
         return true
     }
     if(newItemQuantity > 100){
-        const quantityTooltip = "#quantityErrorTooltip"
+        const quantityTooltip = "quantityErrorMsgTooltip"
         const messageErrorQuantity = `Vous ne pouvez avoir plus de <strong>100 exemplaires</strong> de ce canapé.<br>Vous en avez déjà <strong>${itemInLocalStorage.quantity}</strong> dans votre panier.`
         displayTooltip(quantityTooltip, messageErrorQuantity)
         return false
@@ -86,14 +93,16 @@ const colorAndQuantityAreFillIn = (selectedProduct) => {
 }
 
 const addingToCart = (productData) => {
+    const selectedColor = readInput('#colors')
+    const selectedQuantity = readInput('#quantity')
     const selectedProduct = {
         id: productData._id,
-        color: readInput('#colors'),
-        quantity: readInput('#quantity')
+        color: selectedColor,
+        quantity: selectedQuantity
     }
     if(colorAndQuantityAreFillIn(selectedProduct)){
         if(addToLocalStorage(selectedProduct)){
-            const successTooltip = "#successMsgTooltip"
+            const successTooltip = "successMsgTooltip"
             const messageSuccessAddingToCart = `Vous avez ajouté <strong>${parseFloat(selectedProduct.quantity)} ${productData.name}</strong> de couleur <strong>${selectedProduct.color}</strong> à votre panier`
             displayTooltip(successTooltip, messageSuccessAddingToCart)
         }
