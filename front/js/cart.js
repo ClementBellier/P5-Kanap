@@ -1,8 +1,107 @@
 import { retrieveProductData } from "./api-calls.js"
+import { displayTooltip } from "./tooltip.js"
+
+const findProductIndexInArray = (changeProduct, cartProductArray) => {
+  for(let i = 0; i < cartProductArray.length; i++){
+    const sameIds = (cartProductArray[i].id === changeProduct.id)
+    const sameColor = (cartProductArray[i].color === changeProduct.color)
+    if(sameIds && sameColor){
+      return i
+    }
+  }
+  return null
+}
+
+const testCorrectQuantity = (quantity) => {
+  if(quantity > 0 && quantity <= 100){
+    return true
+  }
+  return false
+}
+
+const retrieveChangeProduct = (e) => {
+  const articleParent = e.target.closest('article')
+  const productId = articleParent.getAttribute('data-id')
+  const productColor = articleParent.getAttribute('data-color')
+  const quantity = parseFloat(e.target.value)
+  const changeProduct = {
+    id: productId,
+    color: productColor,
+    quantity: quantity
+  }
+  return (changeProduct)
+}
+
+const quantityChanges = (cartProductArray) => {
+  document
+    .querySelectorAll('.itemQuantity')
+    .forEach(input => {
+      input.addEventListener('input',(e)=>{
+        const haveCorrectQuantity = testCorrectQuantity(e.target.value)
+        const changeProduct = retrieveChangeProduct(e)
+        const arrayIndex = findProductIndexInArray(changeProduct, cartProductArray)
+        if(haveCorrectQuantity){
+          cartProductArray[arrayIndex].quantity = changeProduct.quantity
+          calculAndDisplayTotalPrice(cartProductArray)          
+          copyArrayInLocalStorage(cartProductArray)
+        }
+        if(!haveCorrectQuantity){
+          e.target.value = cartProductArray[arrayIndex].quantity
+
+          //TODO displayTooltip("quantityErrorMessage", "La quantité doit être comprise entre 1 et 100.")
+          //Must change function, add parent selection
+        }
+      })
+    })
+}
+
+const deleteInArray = (cartProductArray, arrayIndex) => {
+  cartProductArray.splice(arrayIndex,1)
+}
+
+const copyArrayInLocalStorage = (cartProductArray) => {
+  localStorage.clear()
+  cartProductArray.forEach(product =>{
+    const productDatasForLocalStorage = {
+      id: product.id,
+      color: product.color,
+      quantity: product.quantity
+    }
+    localStorage.setItem(`${localStorage.length}`, JSON.stringify(productDatasForLocalStorage))
+  })
+}
+
+const hideDeleteProductHtmlElement = (deleteProduct) => {
+  document.querySelectorAll('article').forEach(article => {
+    const id = article.getAttribute('data-id')
+    const color = article.getAttribute('data-color')
+    if(id === deleteProduct.id && color === deleteProduct.color){
+      document.querySelector('#cart__items').removeChild(article)
+    }
+  })
+}
+
+const deleteProduct = (cartProductArray) => {
+  document
+    .querySelectorAll('.deleteItem')
+    .forEach(deleteButton => {
+      deleteButton.addEventListener('click', (e)=>{
+        const deleteProduct = retrieveChangeProduct(e)
+        const arrayIndex = findProductIndexInArray(deleteProduct, cartProductArray)
+        deleteInArray(cartProductArray, arrayIndex)
+        copyArrayInLocalStorage(cartProductArray)
+        hideDeleteProductHtmlElement(deleteProduct)
+        calculAndDisplayTotalPrice(cartProductArray)
+        if(cartProductArray.length === 0){
+          displayEmptyCart()
+        }
+      })
+    })
+}
 
 const displayTotalPrice = (totalPrice, quantity) => {
-    document.querySelector("#totalQuantity").innerHTML = quantity
-    document.querySelector("#totalPrice").innerHTML = totalPrice
+    document.querySelector("#totalQuantity").textContent = quantity
+    document.querySelector("#totalPrice").textContent = totalPrice
 }
 
 const calculAndDisplayTotalPrice = (cartProductArray) => {
@@ -22,7 +121,7 @@ const sortArrayById = (cartProductArray) => {
 const createArticleHtmlElement = (product) => {
     document.querySelector("#cart__items")
             .insertAdjacentHTML('beforeend',
-            `<article class="cart__item" data-id="${product.ID}" data-color="${product.color}">
+            `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
                 <div class="cart__item__img">
                     <img src="${product.imageUrl}" alt="${product.altTxt}">
                 </div>
@@ -59,15 +158,31 @@ const addItemToCartProductArray = async (product, cartProductArray) => {
     cartProductArray.push(productDetails)
 }
 
+const displayEmptyCart = () => {
+  const emptyCart = document.createElement("h3")
+  emptyCart.style.textAlign = "center"
+  emptyCart.textContent = "Votre panier est vide."
+  document.querySelector("#cart__items").appendChild(emptyCart)
+}
+
 const cartPage = async () => {
     const cartProductArray = []
-    for(let i = 0; i < localStorage.length; i++){
-        const itemInLocalStorage = JSON.parse(localStorage.getItem(i))
-        await addItemToCartProductArray(itemInLocalStorage, cartProductArray)
+    if(localStorage.length !== 0){
+        for(let i = 0; i < localStorage.length; i++){
+          const itemInLocalStorage = JSON.parse(localStorage.getItem(i))
+          await addItemToCartProductArray(itemInLocalStorage, cartProductArray)
+        }
+      sortArrayById(cartProductArray)
+      cartProductArray.forEach(product => createArticleHtmlElement(product))
+      calculAndDisplayTotalPrice(cartProductArray)
+
+      quantityChanges(cartProductArray)
+      deleteProduct(cartProductArray)
     }
-    sortArrayById(cartProductArray)
-    cartProductArray.forEach(product => createArticleHtmlElement(product))
-    calculAndDisplayTotalPrice(cartProductArray)
+    if(localStorage.length === 0){
+      displayEmptyCart()
+    }
+    
 }
 
 cartPage()
