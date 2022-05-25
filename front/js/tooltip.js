@@ -1,3 +1,7 @@
+/**
+ * Create and add styles to the arrow of the tooltip Element
+ * @returns HTML Element
+ */
 const tooltipArrow = () => {
     const span = document.createElement('span')
     span.style.position= "absolute"
@@ -9,6 +13,11 @@ const tooltipArrow = () => {
     span.style.backgroundColor = "inherit"
     return span
 }
+
+/**
+ * Add style properties to tooltip element
+ * @param {object} tooltipElement HTML Element
+ */
 const tooltipStyleProperties = (tooltipElement) => {
     tooltipElement.style.position = "absolute"
     tooltipElement.style.boxSizing = "border-box"
@@ -23,6 +32,10 @@ const tooltipStyleProperties = (tooltipElement) => {
     tooltipElement.style.transform = "translateY(-60px) scale(0)"
     tooltipElement.style.transition = "all 500ms ease-in-out"
 }
+
+/**
+ * Tooltip Class
+ */
 class Tooltip {
     constructor(id, message, backgroundColor){
         this.id = id
@@ -30,6 +43,9 @@ class Tooltip {
         this.message = message
         this.backgroundColor = backgroundColor
     }
+    /**
+     * Create and display HTML Element for tooltip
+     */
     createTooltip(){
         const div = document.createElement("div")
         const parent = document.querySelector(this.parent)
@@ -40,18 +56,30 @@ class Tooltip {
         div.appendChild(tooltipArrow())
         parent.style.position = "relative"
         parent.appendChild(div)
+        document.querySelector('#addToCart').style.pointerEvents = "none"
     }
+    /**
+     * Animate the tooltip Element. Make it appears and disappears
+     */
     tooltipAppears(){
         document.getElementById(this.id).style.transform = "translateY(0) scale(1)"
     }
     tooltipDisappears(){
         document.getElementById(this.id).style.transform = "translateY(-60px) scale(0)"
     }
+    /**
+     * Remove tooltip Element of the DOM
+     */
     removeTooltip(){
         document.querySelector(this.parent).removeChild(document.getElementById(this.id))
+        document.querySelector('#addToCart').style.pointerEvents = "all"
     }
 }
 
+/**
+ * Create, animate and remove tooltip
+ * @param { instance of tooltip class } tooltip 
+ */
 const tooltipLife = (tooltip) => {
     tooltip.createTooltip()
     window.setTimeout(()=>{tooltip.tooltipAppears()}, 500)
@@ -59,6 +87,11 @@ const tooltipLife = (tooltip) => {
     window.setTimeout(()=>{tooltip.removeTooltip()}, 5000)
 }
 
+/**
+ * Test if it's SuccessMessage or QuantityErrorMessage, create and display corresponding tooltip class
+ * @param {string} idOfTooltip 
+ * @param {string} textToDisplay 
+ */
 const displayTooltip = (idOfTooltip, textToDisplay) => {
     const success = new RegExp("success")
     const quantity = new RegExp("quantity")

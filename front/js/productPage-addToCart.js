@@ -1,9 +1,18 @@
 import { displayTooltip } from "./tooltip.js"
 
+/**
+ * Return the value of a input
+ * @param {string} htmlElement (Id or class of Input HTML Element)
+ * @returns 
+ */
 const readInput = (htmlElement) => {
     return document.querySelector(htmlElement).value
 }
 
+/**
+ * Remove HTML Element of ErrorMessage if it's display
+ * @param {string} parent 
+ */
 const hideErrorMessage = (parent) => {
     const errorMsg = document.querySelector(parent)
     if(errorMsg.querySelector("p")){
@@ -11,6 +20,11 @@ const hideErrorMessage = (parent) => {
     }
 }
 
+/**
+ * Create and display Error Message Element
+ * @param {string} parent 
+ * @param {string} errorMessage 
+ */
 const displayErrorMessage = (parent, errorMessage) => {
     const parentError = document.querySelector(parent)
     if(!parentError.querySelector("p")){
@@ -23,6 +37,11 @@ const displayErrorMessage = (parent, errorMessage) => {
     }
 }
 
+
+/**
+ * Display ErrorMessage if color and/or quantity is missing
+ * @param {object} selectedProduct 
+ */
 const activateErrorMsgDisplay = (selectedProduct) => {
     if(!selectedProduct.color){
         displayErrorMessage(".item__content__settings__color","Merci de choisir une couleur.")
@@ -32,6 +51,9 @@ const activateErrorMsgDisplay = (selectedProduct) => {
     }
 }
 
+/**
+ * Listen Inputs change and hideErrorMessage
+ */
 const listenInputsForHideErrorMsg = () => {
     document
         .querySelector('#colors')
@@ -45,6 +67,12 @@ const listenInputsForHideErrorMsg = () => {
         })
 }
 
+/**
+ * Update quantity of a product already in localstorage or display ErrorTooltip if quantity > 100
+ * @param {object} selectedProduct 
+ * @param {number} index 
+ * @returns 
+ */
 const updateQuantityToLocalStorage = (selectedProduct, index) => {
     const itemInLocalStorage = JSON.parse(localStorage.getItem(index))
     const newItemQuantity = parseFloat(itemInLocalStorage.quantity) + parseFloat(selectedProduct.quantity)
@@ -62,11 +90,21 @@ const updateQuantityToLocalStorage = (selectedProduct, index) => {
     return false
 }
 
+/**
+ * Add product in localstorage
+ * @param {object} selectedProduct 
+ * @returns 
+ */
 const addSelectedProductInLocalStorage = (selectedProduct) => {
     localStorage.setItem(`${localStorage.length}`, JSON.stringify(selectedProduct))
     return true
 }
 
+/**
+ * Test if product is in localstorage, return index if true
+ * @param {object} selectedProduct 
+ * @returns 
+ */
 const isSelectedProductInLocalStorage = (selectedProduct) => {
     for(let i=0; i < localStorage.length; i++){
         const itemInLocalStorage = JSON.parse(localStorage.getItem(i))
@@ -77,6 +115,11 @@ const isSelectedProductInLocalStorage = (selectedProduct) => {
     return null
 }
 
+/**
+ * Test if product is in localstorage then call update function else add function
+ * @param {object} selectedProduct 
+ * @returns 
+ */
 const addToLocalStorage = (selectedProduct) => {
     let indexOfSelectedProductInLocalStorage = isSelectedProductInLocalStorage(selectedProduct)
     if(indexOfSelectedProductInLocalStorage !== null){
@@ -85,6 +128,11 @@ const addToLocalStorage = (selectedProduct) => {
     return addSelectedProductInLocalStorage(selectedProduct)
 }
 
+/**
+ * Test if color and quantity inputs are correctly completed
+ * @param {object} selectedProduct 
+ * @returns 
+ */
 const colorAndQuantityAreFillIn = (selectedProduct) => {
     if(selectedProduct.color && (selectedProduct.quantity > 0 && selectedProduct.quantity <= 100)){
         return true
@@ -92,6 +140,10 @@ const colorAndQuantityAreFillIn = (selectedProduct) => {
     return false
 }
 
+/**
+ * Create selectedProduct object with id, color and quantity, add it to LocalStorage and display success message or display error message
+ * @param {object} productData 
+ */
 const addingToCart = (productData) => {
     const selectedColor = readInput('#colors')
     const selectedQuantity = readInput('#quantity')
@@ -112,6 +164,10 @@ const addingToCart = (productData) => {
     }
 }
 
+/**
+ * Listen action in cart button then call adding function
+ * @param {object} productData 
+ */
 const listenAddToCartButton = (productData) => {
     document
         .querySelector('#addToCart')
