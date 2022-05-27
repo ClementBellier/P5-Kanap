@@ -21,7 +21,6 @@ const tooltipArrow = () => {
 const tooltipStyleProperties = (tooltipElement) => {
     tooltipElement.style.position = "absolute"
     tooltipElement.style.boxSizing = "border-box"
-    tooltipElement.style.top = "120px"
     tooltipElement.style.left = "0"
     tooltipElement.style.width = "clamp(230px, 100%, 700px)"
     tooltipElement.style.padding = "28px 28px"
@@ -37,10 +36,11 @@ const tooltipStyleProperties = (tooltipElement) => {
  * Tooltip Class
  */
 class Tooltip {
-    constructor(id, message, backgroundColor){
+    constructor(id, parent, message, position, backgroundColor){
         this.id = id
-        this.parent = ".item__content__addButton"
+        this.parent = parent
         this.message = message
+        this.position = position
         this.backgroundColor = backgroundColor
     }
     /**
@@ -52,11 +52,12 @@ class Tooltip {
         div.id = this.id
         tooltipStyleProperties(div)
         div.style.backgroundColor = this.backgroundColor
+        div.style.top = this.position
         div.innerHTML = this.message
         div.appendChild(tooltipArrow())
         parent.style.position = "relative"
         parent.appendChild(div)
-        document.querySelector('#addToCart').style.pointerEvents = "none"
+        //document.querySelector('#addToCart').style.pointerEvents = "none"
     }
     /**
      * Animate the tooltip Element. Make it appears and disappears
@@ -72,7 +73,7 @@ class Tooltip {
      */
     removeTooltip(){
         document.querySelector(this.parent).removeChild(document.getElementById(this.id))
-        document.querySelector('#addToCart').style.pointerEvents = "all"
+        //document.querySelector('#addToCart').style.pointerEvents = "all"
     }
 }
 
@@ -90,17 +91,18 @@ const tooltipLife = (tooltip) => {
 /**
  * Test if it's SuccessMessage or QuantityErrorMessage, create and display corresponding tooltip class
  * @param {string} idOfTooltip 
- * @param {string} textToDisplay 
+ * @param {string} parentOfTooltip 
+ * @param {string} textToDisplay
  */
-const displayTooltip = (idOfTooltip, textToDisplay) => {
+const displayTooltip = (idOfTooltip, parentOfTooltip, textToDisplay) => {
     const success = new RegExp("success")
     const quantity = new RegExp("quantity")
     if(success.test(idOfTooltip)){
-        const successTooltip = new Tooltip(idOfTooltip, textToDisplay, "var(--secondary-color)")
+        const successTooltip = new Tooltip(idOfTooltip, parentOfTooltip, textToDisplay, "120px", "var(--secondary-color)")
         tooltipLife(successTooltip)
     }
     if(quantity.test(idOfTooltip)){
-        const quantityErrorTooltip = new Tooltip(idOfTooltip, textToDisplay, "#ff5f5f")
+        const quantityErrorTooltip = new Tooltip(idOfTooltip, parentOfTooltip, textToDisplay, "48px", "#ff5f5f")
         tooltipLife(quantityErrorTooltip)
     }
 }

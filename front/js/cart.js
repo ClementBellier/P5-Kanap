@@ -1,5 +1,4 @@
 import { retrieveProductData } from "./api-calls.js"
-import { displayTooltip } from "./tooltip.js"
 
 const findProductIndexInArray = (changeProduct, cartProductArray) => {
   for(let i = 0; i < cartProductArray.length; i++){
@@ -47,9 +46,6 @@ const quantityChanges = (cartProductArray) => {
         }
         if(!haveCorrectQuantity){
           e.target.value = cartProductArray[arrayIndex].quantity
-
-          //TODO displayTooltip("quantityErrorMessage", "La quantité doit être comprise entre 1 et 100.")
-          //Must change function, add parent selection
         }
       })
     })
