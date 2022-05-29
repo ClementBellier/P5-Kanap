@@ -57,7 +57,7 @@ class Tooltip {
         div.appendChild(tooltipArrow())
         parent.style.position = "relative"
         parent.appendChild(div)
-        //document.querySelector('#addToCart').style.pointerEvents = "none"
+        document.querySelector('#addToCart').style.pointerEvents = "none"
     }
     /**
      * Animate the tooltip Element. Make it appears and disappears
@@ -73,7 +73,7 @@ class Tooltip {
      */
     removeTooltip(){
         document.querySelector(this.parent).removeChild(document.getElementById(this.id))
-        //document.querySelector('#addToCart').style.pointerEvents = "all"
+        document.querySelector('#addToCart').style.pointerEvents = "all"
     }
 }
 

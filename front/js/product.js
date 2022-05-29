@@ -24,7 +24,6 @@ const replacePageTitle = (product) => {
 /**
  * Create product image element with alt text
  * @param {array} product
- * @returns {HTMLElement}
  */
 const createProductImg = (product) => {
     let img = document.createElement('img')
