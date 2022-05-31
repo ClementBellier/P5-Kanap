@@ -7,7 +7,7 @@ import { displayTooltip } from "./tooltip.js"
  */
 const readInput = (htmlElement) => {
     return document.querySelector(htmlElement).value
-}
+};
 
 /**
  * Remove HTML Element of ErrorMessage if it's display
@@ -180,3 +180,4 @@ const listenAddToCartButton = (productData) => {
 }
 
 export {listenAddToCartButton}
+export {readInput}

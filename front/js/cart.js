@@ -1,4 +1,5 @@
 import { retrieveProductData } from "./api-calls.js"
+import { listenOrderButton } from "./cart-order.js"
 
 const findProductIndexInArray = (changeProduct, cartProductArray) => {
   for(let i = 0; i < cartProductArray.length; i++){
@@ -174,6 +175,8 @@ const cartPage = async () => {
 
       quantityChanges(cartProductArray)
       deleteProduct(cartProductArray)
+
+      listenOrderButton(cartProductArray)
     }
     if(localStorage.length === 0){
       displayEmptyCart()
