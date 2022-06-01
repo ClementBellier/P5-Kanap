@@ -160,6 +160,7 @@ const displayEmptyCart = () => {
   emptyCart.style.textAlign = "center"
   emptyCart.textContent = "Votre panier est vide."
   document.querySelector("#cart__items").appendChild(emptyCart)
+  displayTotalPrice(0,0)
 }
 
 const cartPage = async () => {
