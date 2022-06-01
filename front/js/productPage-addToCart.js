@@ -82,10 +82,10 @@ const updateQuantityToLocalStorage = (selectedProduct, index) => {
         return true
     }
     if(newItemQuantity > 100){
-        const quantityTooltip = "quantityErrorMsgTooltip"
-        const parentOfQuantityTooltip = ".item__content__settings__quantity"
+        const errorTooltip = "errorMsgTooltip"
+        const parentOfErrorTooltip = "#addToCart"
         const messageErrorQuantity = `Vous ne pouvez avoir plus de <strong>100 exemplaires</strong> de ce canapé.<br>Vous en avez déjà <strong>${itemInLocalStorage.quantity}</strong> dans votre panier.`
-        displayTooltip(quantityTooltip, parentOfQuantityTooltip, messageErrorQuantity)
+        displayTooltip(errorTooltip, parentOfErrorTooltip, messageErrorQuantity)
         return false
     }
     return false
@@ -156,7 +156,7 @@ const addingToCart = (productData) => {
     if(colorAndQuantityAreFillIn(selectedProduct)){
         if(addToLocalStorage(selectedProduct)){
             const successTooltip = "successMsgTooltip"
-            const parentOfSuccessTooltip = ".item__content__addButton"
+            const parentOfSuccessTooltip = "#addToCart"
             const messageSuccessAddingToCart = `Vous avez ajouté <strong>${parseFloat(selectedProduct.quantity)} ${productData.name}</strong> de couleur <strong>${selectedProduct.color}</strong> à votre panier`
             displayTooltip(successTooltip, parentOfSuccessTooltip, messageSuccessAddingToCart)
         }
