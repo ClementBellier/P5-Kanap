@@ -90,11 +90,10 @@ const isCorrectlyFillIn = (input) => {
 }
 
 const checkInputsCorrectlyFillIn = () => {
-    if(cartInputsNames.every(input => isCorrectlyFillIn(input))){          
-        document.querySelector("#order").disabled = false
+    if(cartInputsNames.every(input => isCorrectlyFillIn(input)))
+    {
         return true
     }
-    document.querySelector("#order").disabled = true
     return false
 }
 
