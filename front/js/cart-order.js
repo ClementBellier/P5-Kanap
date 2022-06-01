@@ -4,19 +4,19 @@ import { postOrderToAPI } from "./api-calls.js"
 const cartInputsNames = ["firstName","lastName","address","city","email"]
 
 const cartErrorMessages = {
-    firstName: "Le prénom ne doit pas contenir de chiffres ni de caractères spéciaux excepté ',-. ",
-    lastName: "Le nom ne doit pas contenir de chiffres ni de caractères spéciaux excepté ',-. ",
-    address: "L'adresse ne doit pas contenir de caractères spéciaux excepté ',-. ",
-    city: "La ville ne doit pas contenir de caractères spéciaux excepté ',-. ",
-    email: "L'email doit être dans le format suivant exemple@domaine.fr"
+    firstName: "<strong>Le prénom</strong> ne doit <strong>pas</strong> contenir de <strong>chiffres</strong> ni de <strong>caractères spéciaux</strong> sauf <strong>' . , -</strong> ",
+    lastName: "<strong>Le nom</strong> ne doit <strong>pas</strong> contenir de <strong>chiffres</strong> ni de <strong>caractères spéciaux</strong> sauf <strong>' . , -</strong> ",
+    address: "<strong>L'adresse</strong> ne doit <strong>pas</strong> contenir de <strong>caractères spéciaux</strong> sauf <strong>' . , -</strong>  ",
+    city: "<strong>La ville</strong> ne doit <strong>pas</strong> contenir de <strong>caractères spéciaux</strong> sauf <strong>' . , -</strong> ",
+    email: "<strong>L'email</strong> doit être dans le <strong>format</strong> suivant <strong>exemple@domaine.fr</strong>"
 }
 
 const cartEmptyMessages = {
-    firstName: "Le prénom est un champ obligatoire. Veuillez le renseigner (ex: Obi-Wan).",
-    lastName: "Le nom est un champ obligatoire. Veuillez le renseigner (ex: Kenobi).",
-    address: "L'adresse est champ obligatoire. Veuillez le renseigner (ex: 3bis, Mer de Sable).",
-    city: "La ville est un champ obligatoire. Veuillez le renseigner (ex: 1977 Mos Espa, Tatooine).",
-    email: "L'email est un champ obligatoire. Veuillez le renseigner (ex: obi-wan.kenobi@conseil-jedi.org)."
+    firstName: "<strong>Le prénom</strong> est un <strong>champ obligatoire</strong>. Veuillez le renseigner (ex: Obi-Wan).",
+    lastName: "<strong>Le nom</strong> est un <strong>champ obligatoire</strong>. Veuillez le renseigner (ex: Kenobi).",
+    address: "<strong>L'adresse</strong> est <strong>champ obligatoire</strong>. Veuillez le renseigner (ex: 3bis, Mer de Sable).",
+    city: "<strong>La ville</strong> est un <strong>champ obligatoire</strong>. Veuillez le renseigner (ex: 1977 Mos Espa, Tatooine).",
+    email: "<strong>L'email</strong> est un <strong>champ obligatoire</strong>. Veuillez le renseigner (ex: obi-wan.kenobi@conseil-jedi.org)."
 }
 
 const formRegExp = {
@@ -31,15 +31,15 @@ const listenCartInputsForErrorMsg = () =>{
     cartInputsNames.forEach(input => {
         document.querySelector(`#${input}`).addEventListener('input', ()=>{
             if(isCorrectlyFillIn(input)){
-                document.querySelector(`#${input}`).style.border = 'none'
+                document.querySelector(`#${input}`).style.backgroundColor = "#FFFFFF"
                 document.querySelector(`#${input}ErrorMsg`).innerHTML = ''
             }
         })
     })
 }
 
-const postOrder = (orderBody) => {
-    postOrderToAPI(orderBody)
+const postOrder = async (orderBody) => {
+    return await postOrderToAPI(orderBody)
 }
 
 const buildOrderBody = (cartProductArray) => {
@@ -64,7 +64,7 @@ const buildOrderBody = (cartProductArray) => {
 }
 
 const displayMessage = (input, emptyInput) => {
-    document.querySelector(`#${input}`).style.border = "3px solid #fbbcbc"
+    document.querySelector(`#${input}`).style.backgroundColor = "#fbbcbc"
     let cartMessages
     if(emptyInput){
         cartMessages = cartEmptyMessages
@@ -90,17 +90,20 @@ const isCorrectlyFillIn = (input) => {
 }
 
 const checkInputsCorrectlyFillIn = () => {
-    if(cartInputsNames.every(input => isCorrectlyFillIn(input))
-      ){
-          return true
-      }
-      return false
+    if(cartInputsNames.every(input => isCorrectlyFillIn(input))){          
+        document.querySelector("#order").disabled = false
+        return true
+    }
+    document.querySelector("#order").disabled = true
+    return false
 }
 
-const order = (cartProductArray) => {
+const order = async (cartProductArray) => {
     if(checkInputsCorrectlyFillIn()){
         const orderBody = buildOrderBody(cartProductArray)
-        postOrder(orderBody)
+        const orderId = await postOrder(orderBody)
+        const confirmationUrl = `http://127.0.0.1:5500/front/html/confirmation.html?orderId=${orderId}`
+        document.location.href = confirmationUrl
     }
 }
 
@@ -108,8 +111,8 @@ const listenOrderButton = (cartProductArray) => {
     document
         .querySelector("#order")
         .addEventListener('click', (e) => {
-            order(cartProductArray)
             e.preventDefault()
+            order(cartProductArray)
         })
     listenCartInputsForErrorMsg()
 }

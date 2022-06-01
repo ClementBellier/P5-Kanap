@@ -156,7 +156,7 @@ const addItemToCartProductArray = async (product, cartProductArray) => {
 }
 
 const displayEmptyCart = () => {
-  const emptyCart = document.createElement("h3")
+  const emptyCart = document.createElement("h2")
   emptyCart.style.textAlign = "center"
   emptyCart.textContent = "Votre panier est vide."
   document.querySelector("#cart__items").appendChild(emptyCart)
@@ -176,7 +176,7 @@ const cartPage = async () => {
       quantityChanges(cartProductArray)
       deleteProduct(cartProductArray)
 
-      listenOrderButton(cartProductArray)
+      await listenOrderButton(cartProductArray)
     }
     if(localStorage.length === 0){
       displayEmptyCart()
