@@ -1,3 +1,7 @@
+/**
+ * Test error and display corresponding message
+ * @param {string} error 
+ */
 const errorManangement = (error) => {
     const syntaxError = new RegExp('Syntax')
     const serverError = new RegExp('Database')

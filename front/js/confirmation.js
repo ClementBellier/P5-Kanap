@@ -1,9 +1,17 @@
+/**
+ * Retrieve order id in URL
+ * @returns {string} order id
+ */
 const retrieveOrderId = () => {
     const url = new URLSearchParams(document.location.search)
 
     return url.get("orderId")
 }
 
+/**
+ * Retrieve Order id and display it
+ * or display error message
+ */
 const confirmationPage = () => {
     const orderId = retrieveOrderId()
     console.log(orderId)

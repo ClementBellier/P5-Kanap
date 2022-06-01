@@ -1,6 +1,12 @@
 import { retrieveProductData } from "./api-calls.js"
 import { listenOrderButton } from "./cart-order.js"
 
+/**
+ * Search change product index in cartArray
+ * @param {object} changeProduct 
+ * @param {array} cartProductArray 
+ * @returns product index in cartProductArray
+ */
 const findProductIndexInArray = (changeProduct, cartProductArray) => {
   for(let i = 0; i < cartProductArray.length; i++){
     const sameIds = (cartProductArray[i].id === changeProduct.id)
@@ -12,6 +18,11 @@ const findProductIndexInArray = (changeProduct, cartProductArray) => {
   return null
 }
 
+/**
+ * Test if quantity is between 0 and 100
+ * @param {number} quantity 
+ * @returns boolean
+ */
 const testCorrectQuantity = (quantity) => {
   if(quantity > 0 && quantity <= 100){
     return true
@@ -19,6 +30,11 @@ const testCorrectQuantity = (quantity) => {
   return false
 }
 
+/**
+ * Find change product and return it in an object
+ * @param {event} e 
+ * @returns object {id,color,qauntity} of change product
+ */
 const retrieveChangeProduct = (e) => {
   const articleParent = e.target.closest('article')
   const productId = articleParent.getAttribute('data-id')
@@ -32,6 +48,12 @@ const retrieveChangeProduct = (e) => {
   return (changeProduct)
 }
 
+/**
+ * Listen to quantity change,
+ * check correct quantity, change totalPrice and Localstorage
+ * or ignore quantity change
+ * @param {array} cartProductArray 
+ */
 const quantityChanges = (cartProductArray) => {
   document
     .querySelectorAll('.itemQuantity')
@@ -52,10 +74,19 @@ const quantityChanges = (cartProductArray) => {
     })
 }
 
+/**
+ * Remove product in cartProductArray
+ * @param {array} cartProductArray 
+ * @param {number} arrayIndex 
+ */
 const deleteInArray = (cartProductArray, arrayIndex) => {
   cartProductArray.splice(arrayIndex,1)
 }
 
+/**
+ * Clear Localstorage and copy cartProductArray in it
+ * @param {array} cartProductArray 
+ */
 const copyArrayInLocalStorage = (cartProductArray) => {
   localStorage.clear()
   cartProductArray.forEach(product =>{
@@ -68,6 +99,10 @@ const copyArrayInLocalStorage = (cartProductArray) => {
   })
 }
 
+/**
+ * Search and remove HTML Element of deleted product
+ * @param {object} deleteProduct 
+ */
 const hideDeleteProductHtmlElement = (deleteProduct) => {
   document.querySelectorAll('article').forEach(article => {
     const id = article.getAttribute('data-id')
@@ -78,6 +113,11 @@ const hideDeleteProductHtmlElement = (deleteProduct) => {
   })
 }
 
+/**
+ * Listen to delete buttons
+ * and remove it from cartProductArray and Localstorage
+ * @param {array} cartProductArray 
+ */
 const deleteProduct = (cartProductArray) => {
   document
     .querySelectorAll('.deleteItem')
@@ -96,11 +136,20 @@ const deleteProduct = (cartProductArray) => {
     })
 }
 
+/**
+ * Display Quantity and Total Price
+ * @param {number} totalPrice 
+ * @param {number} quantity 
+ */
 const displayTotalPrice = (totalPrice, quantity) => {
     document.querySelector("#totalQuantity").textContent = quantity
     document.querySelector("#totalPrice").textContent = totalPrice
 }
 
+/**
+ * Calcul and display total price
+ * @param {array} cartProductArray 
+ */
 const calculAndDisplayTotalPrice = (cartProductArray) => {
     let totalPrice = 0
     let quantity = 0
@@ -111,10 +160,18 @@ const calculAndDisplayTotalPrice = (cartProductArray) => {
     displayTotalPrice(totalPrice, quantity)
 }
 
+/**
+ * Sort cartProductArray by Id
+ * @param {array} cartProductArray 
+ */
 const sortArrayById = (cartProductArray) => {
   cartProductArray.sort((a,z)=> a.id.localeCompare(z.id))
 }
 
+/**
+ * Create and display Product HTML Element
+ * @param {object} product 
+ */
 const createArticleHtmlElement = (product) => {
     document.querySelector("#cart__items")
             .insertAdjacentHTML('beforeend',
@@ -141,6 +198,12 @@ const createArticleHtmlElement = (product) => {
             </article>`)
 }
 
+/**
+ * Retrieve product data from API,
+ * make object and add it in cartPorductArray
+ * @param {object} product 
+ * @param {array} cartProductArray 
+ */
 const addItemToCartProductArray = async (product, cartProductArray) => {
     const productData = await retrieveProductData(product.id)
     const productDetails = {
@@ -155,6 +218,9 @@ const addItemToCartProductArray = async (product, cartProductArray) => {
     cartProductArray.push(productDetails)
 }
 
+/**
+ * Display text, quantity (0) and price (0) when cart is empty
+ */
 const displayEmptyCart = () => {
   const emptyCart = document.createElement("h2")
   emptyCart.style.textAlign = "center"
@@ -163,6 +229,11 @@ const displayEmptyCart = () => {
   displayTotalPrice(0,0)
 }
 
+/**
+ * Create a sort array of product in localstorage,
+ * display on page and listen for user interaction
+ * or display message if cart is empty
+ */
 const cartPage = async () => {
     const cartProductArray = []
     if(localStorage.length !== 0){
