@@ -1,3 +1,4 @@
+import { retrieveProductData } from "./api-calls.js"
 import { errorManangement } from "./error.js"
 import { listenAddToCartButton } from "./productPage-addToCart.js"
 
@@ -79,15 +80,6 @@ const displayProductData = (product) => {
     fillProductText(product)
     addColorsForSelectElement(product)    
 }
-
-/**
- * Ask product data to API and return them
- * @returns { Object }
- */
-const retrieveProductData = async (productId) => fetch(`http://localhost:3000/api/products/${productId}`)
-        .then(res => res.json())
-        .then(data => data)
-        .catch(error =>errorManangement(error))
 
 /**
  * Retrieve product data and display then

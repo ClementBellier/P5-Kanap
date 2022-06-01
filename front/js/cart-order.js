@@ -147,7 +147,7 @@ const order = async (cartProductArray) => {
     if(checkInputsCorrectlyFillIn()){
         const orderBody = buildOrderBody(cartProductArray)
         const orderId = await postOrder(orderBody)
-        const confirmationUrl = `http://127.0.0.1:5500/front/html/confirmation.html?orderId=${orderId}`
+        const confirmationUrl = `./confirmation.html?orderId=${orderId}`
         document.location.href = confirmationUrl
     }
 }

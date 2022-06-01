@@ -1,4 +1,4 @@
-import { errorManangement } from "./error.js"
+import { retrieveProductsList } from "./api-calls.js"
 
 /**
  * Create a HTML card for 1 product at the end of items section
@@ -19,17 +19,7 @@ const createHtmlCardForOneProduct = (product) => {
 }
 
 /**
- * Ask products list to API and return it
- * @returns { Object } data
- */
-const retrieveProductsList = async () => fetch("http://localhost:3000/api/products/")
-    .then(res => res.json())
-    .then(data => data)
-    .catch(error =>errorManangement(error))
-
-
-/**
- * Wait products list form API and create a card for each
+ * Wait products list form API and create a card for each product
  */
 const homePage = async () => {
     const productsList = await retrieveProductsList()
