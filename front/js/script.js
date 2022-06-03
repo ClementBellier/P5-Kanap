@@ -1,4 +1,4 @@
-import { retrieveProductsList } from "./api-calls.js"
+import { retrieveProductData } from "./api-calls.js"
 
 /**
  * Create a HTML card for 1 product at the end of items section
@@ -22,7 +22,7 @@ const createHtmlCardForOneProduct = (product) => {
  * Wait products list form API and create a card for each product
  */
 const homePage = async () => {
-    const productsList = await retrieveProductsList()
+    const productsList = await retrieveProductData('')
 
     productsList.forEach(product => {
         createHtmlCardForOneProduct(product)

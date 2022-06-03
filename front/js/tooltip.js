@@ -26,6 +26,7 @@ const tooltipStyleProperties = (tooltipElement) => {
     tooltipElement.style.width = "clamp(230px, 50vw, 700px)"
     tooltipElement.style.padding = "28px 28px"
     tooltipElement.style.borderRadius = "40px"
+    tooltipElement.style.fontSize = "1.1rem"
     tooltipElement.style.textAlign = "center"
     tooltipElement.style.zIndex = "10"
     tooltipElement.style.pointerEvents = "none"

@@ -1,16 +1,8 @@
 import { errorManangement } from "./error.js"
 
 /**
- * Ask products list to API and return it
- * @returns { Object } data
- */
-const retrieveProductsList = async () => fetch("http://localhost:3000/api/products/")
-        .then(res => res.json())
-        .then(data => data)
-        .catch(error =>errorManangement(error));
-
-/**
  * Ask product data to API and return them
+ * @param {string} productId or empty for all products
  * @returns { Object } product data
  */
 const retrieveProductData = async (productId) =>
@@ -37,6 +29,5 @@ const postOrderToAPI = async (orderBody) =>
         .then(data => data.orderId)
         .catch(error =>errorManangement(error));
 
-export {retrieveProductsList}
 export {retrieveProductData}
 export {postOrderToAPI}

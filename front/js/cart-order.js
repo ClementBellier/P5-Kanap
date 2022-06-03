@@ -44,7 +44,7 @@ const FORM_REGEXP = {
 const listenCartInputsForErrorMsg = () =>{
     CART_INPUTS_NAMES.forEach(input => {
         document.querySelector(`#${input}`).addEventListener('input', ()=>{
-            if(isCorrectlyFillIn(input)){
+            if(isCorrectlyFillInOrDisplayErrorAndEmptyMsg(input)){
                 document.querySelector(`#${input}`).style.backgroundColor = "#FFFFFF"
                 document.querySelector(`#${input}ErrorMsg`).innerHTML = ''
             }
@@ -90,18 +90,11 @@ const buildOrderBody = (cartProductArray) => {
 /**
  * display error or empty message for input
  * @param {string} input name
- * @param {boolean} isEmpty 
+ * @param {string} message
  */
-const displayMessage = (input, isEmpty) => {
+const displayMessage = (input, message) => {
     document.querySelector(`#${input}`).style.backgroundColor = "#fbbcbc"
-    let cartMessages
-    if(isEmpty){
-        cartMessages = CART_EMPTY_MESSAGES
-    }
-    else{
-        cartMessages = CART_ERROR_MESSAGES
-    }
-    document.querySelector(`#${input}ErrorMsg`).innerHTML = cartMessages[input]
+    document.querySelector(`#${input}ErrorMsg`).innerHTML = message
 }
 
 /**
@@ -110,16 +103,14 @@ const displayMessage = (input, isEmpty) => {
  * @param {string} input 
  * @returns {boolean}
  */
-const isCorrectlyFillIn = (input) => {
+const isCorrectlyFillInOrDisplayErrorAndEmptyMsg = (input) => {
     const value = readInput(`#${input}`)
     const isEmpty = value.length === 0
-    if(isEmpty){
-        displayMessage(input, isEmpty)
-        return false
-    }
     const regExp = FORM_REGEXP[input]
-    if(!regExp.test(value)){
-        displayMessage(input, isEmpty)
+    if(isEmpty || !regExp.test(value)){
+        let cartMessage = CART_ERROR_MESSAGES
+        if(isEmpty) cartMessage = CART_EMPTY_MESSAGES
+        displayMessage(input, cartMessage[input])
         return false
     }
     return true
@@ -129,12 +120,12 @@ const isCorrectlyFillIn = (input) => {
  * Test if all inputs are correctly fill in
  * @returns {boolean}
  */
-const checkInputsCorrectlyFillIn = () => {
-    if(CART_INPUTS_NAMES.every(input => isCorrectlyFillIn(input)))
-    {
-        return true
-    }
-    return false
+const checkAllInputsCorrectlyFillIn = () => {
+    let isAllInputsCorrect = false
+    CART_INPUTS_NAMES.forEach(input => {
+        isAllInputsCorrect = isCorrectlyFillInOrDisplayErrorAndEmptyMsg(input)
+    })
+    return isAllInputsCorrect
 }
 
 /**
@@ -144,7 +135,7 @@ const checkInputsCorrectlyFillIn = () => {
  * @param {array} cartProductArray 
  */
 const order = async (cartProductArray) => {
-    if(checkInputsCorrectlyFillIn()){
+    if(checkAllInputsCorrectlyFillIn()){
         const orderBody = buildOrderBody(cartProductArray)
         const orderId = await postOrder(orderBody)
         const confirmationUrl = `./confirmation.html?orderId=${orderId}`

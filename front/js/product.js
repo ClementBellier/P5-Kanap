@@ -1,5 +1,4 @@
 import { retrieveProductData } from "./api-calls.js"
-import { errorManangement } from "./error.js"
 import { listenAddToCartButton } from "./productPage-addToCart.js"
 
 /**
