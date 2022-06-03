@@ -1,4 +1,5 @@
-import { errorManangement } from "./error.js"
+import { retrieveProductData } from "./api-calls.js"
+import { listenAddToCartButton } from "./productPage-addToCart.js"
 
 /**
  * Find product id in current URL
@@ -23,7 +24,6 @@ const replacePageTitle = (product) => {
 /**
  * Create product image element with alt text
  * @param {array} product
- * @returns {HTMLElement}
  */
 const createProductImg = (product) => {
     let img = document.createElement('img')
@@ -81,20 +81,13 @@ const displayProductData = (product) => {
 }
 
 /**
- * Ask product data to API and return them
- * @returns { Object }
- */
-const retrieveProductData = async () => fetch('http://localhost:3000/api/products/'+retrieveProductId())
-        .then(res => res.json())
-        .then(data => data)
-        .catch(error =>errorManangement(error))
-
-/**
  * Retrieve product data and display then
  */
 const productPage = async () =>{
-    const productData = await retrieveProductData()
+    const productId = retrieveProductId()
+    const productData = await retrieveProductData(productId)
     displayProductData(productData)
+    listenAddToCartButton(productData)
 }
 
 productPage()
