@@ -24,10 +24,7 @@ const findProductIndexInArray = (changeProduct, cartProductArray) => {
  * @returns boolean
  */
 const testCorrectQuantity = (quantity) => {
-  if(quantity > 0 && quantity <= 100){
-    return true
-  }
-  return false
+  return quantity > 0 && quantity <= 100
 }
 
 /**

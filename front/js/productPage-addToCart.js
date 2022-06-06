@@ -135,10 +135,7 @@ const addToLocalStorage = (selectedProduct) => {
  * @returns 
  */
 const colorAndQuantityAreFillIn = (selectedProduct) => {
-    if(selectedProduct.color && (selectedProduct.quantity > 0 && selectedProduct.quantity <= 100)){
-        return true
-    }
-    return false
+    return selectedProduct.color && (selectedProduct.quantity > 0 && selectedProduct.quantity <= 100)
 }
 
 /**

@@ -102,8 +102,8 @@ const displayTooltip = (idOfTooltip, parentOfTooltip, textToDisplay) => {
         tooltipLife(successTooltip)
     }
     if(error.test(idOfTooltip)){
-        const quantityErrorTooltip = new Tooltip(idOfTooltip, parentOfTooltip, textToDisplay, "#ff5f5f")
-        tooltipLife(quantityErrorTooltip)
+        const ErrorTooltip = new Tooltip(idOfTooltip, parentOfTooltip, textToDisplay, "#ff5f5f")
+        tooltipLife(ErrorTooltip)
     }
 }
 
