@@ -78,7 +78,6 @@ class Tooltip {
     }
     /**
      * Create, animate and remove tooltip
-     * @param { instance of tooltip class } tooltip 
      */
     tooltipLife(){
         this.createTooltip()
